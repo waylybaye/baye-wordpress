@@ -45,24 +45,31 @@ function bm_admin(){
     $token = md5($api_key . $api_secret);
 ?>
 <script type="text/javascript">
-function show_tab(tab){
-    if( tab == 'settings' ){
-        iframe = document.getElementById('bm_iframe');
-        iframe.src = "http://baye.me/api/apis/";
+    function show_tab(tab){
+        if( tab == 'settings' ){
+            iframe = document.getElementById('bm_iframe');
+            iframe.src = "http://baye.me/api/apis/";
+        }
+        if( tab == 'comments' ){
+            iframe = document.getElementById('bm_iframe');
+            iframe.src = "http://baye.me/wordpress/comments?apikey=<?php echo $api_key; ?>&token=<?php echo $token; ?>";
+        }
     }
-    if( tab == 'comments' ){
+    function show_comments(label){
         iframe = document.getElementById('bm_iframe');
-        iframe.src = "http://baye.me/wordpress/comments?apikey=<?php echo $api_key; ?>&token=<?php echo $token; ?>";
+        iframe.src = "http://baye.me/wordpress/comments/" + label + "?apikey=<?php echo $api_key; ?>&token=<?php echo $token; ?>";
     }
-}
 </script>
 <link rel="stylesheet" href='<?echo WP_CONTENT_URL . '/plugins' . bm_get_plugin_path(__FILE__); ?>/styles.css'/>
 <p id="bm_panel">
-<a class="button" href='javascript:show_tab("settings");'>API 设置</a>
-<a class="button" href='javascript:show_tab("comments");'>评论管理</a>
-<a class="button" href='javascript:show_tab("settings");'>评论审核</a>
+    <a class="button" href='javascript:show_tab("settings");'>API 设置</a>
+    <a class="button" href='javascript:show_tab("comments");'>评论管理</a>
+    <a class="button" href='javascript:show_comments("unapproved");'>审核评论</a>
+    <a class="button" href='javascript:show_comments("reported");'>被举报评论</a>
+    <a class="button" href='javascript:show_comments("spam");'>垃圾评论</a>
+    <a class="button" href='javascript:show_comments("deleted");'>回收站</a>
 </p>
-<iframe id='bm_iframe' src="http://baye.me/wordpress/comments?apikey=<?php echo $api_key; ?>&token=<?php echo $token; ?>" width="100%" height="100%">
+<iframe id='bm_iframe' src="http://baye.me/wordpress/comments?apikey=<?php echo $api_key; ?>&token=<?php echo $token; ?>" width="900" height="900">
 </iframe>
 <?php
 }
