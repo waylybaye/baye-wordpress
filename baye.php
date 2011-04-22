@@ -8,7 +8,6 @@ Author: Wayly.baye
 Author URI: http://baye.wayly.net
 */
 ?>
-
 <?php
 function bm_get_plugin_path($file){
     $path = dirname($file);
@@ -28,11 +27,20 @@ function bm_install(){
 function bm_remove(){
 }
 
+function bm_request_handler(){
+    if( !empty($_GET['bm_action'] )){
+        if( $_GET['bm_action'] == 'export_comments'){
+            include_once(dirname(__FILE__) . '/export_comments.php');
+        }
+    }
+}
+add_action('init', 'bm_request_handler');
+
 add_filter("comments_open", "bm_comments_open");
 add_filter("comments_template", "bm_comments_template");
 
-register_activation_hook(__FILE__, 'display_copyright_install');
-register_deactivation_hook(__FILE__, 'display_copyright_remove');
+register_activation_hook(__FILE__, 'bm_install');
+register_deactivation_hook(__FILE__, 'bm_remove');
 
 function bm_admin_menu(){
     add_options_page('BAYE.ME 设置', 'BAYE.ME', 'administrator', 'bm_settings', 'bm_settings');
