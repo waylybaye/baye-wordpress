@@ -110,6 +110,25 @@ function bm_settings(){
         <input type="submit" value="保存设置" class="button-primary" /> 
     </p> 
     </form> 
+
+    <br/>
+
+    <p> <h3>导出WordPress 评论</h3> </p>
+    <div>
+        <a class="button" id="bm_export_comments" >导出评论</a>
+        <p id="bm_export_comments_info">
+        </p>
+    </div>
+
+
+    <script type="text/javascript">
+        jQuery('#bm_export_comments').click(function(){
+            jQuery.get("<?php echo admin_url('index.php'); ?>?bm_action=export_comments", {}, function(resp){
+                jQuery('#bm_export_comments_info').html(resp);
+            }, 'html')
+            return false;
+        });
+    </script>
 </div> 
 <?php } 
 if( is_admin() ){

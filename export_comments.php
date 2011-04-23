@@ -4,9 +4,11 @@
     global $wpdb;
     
     $last_update_id = get_option('bm_last_update_id', 0);
+    $max_comment_id = 0;
 
     //$sql = "SELECT DISTINCT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE comment_approved = '1' AND comment_type = '' AND post_password = '' AND comment_ID > $last_update_id ORDER BY comment_date_gmt LIMIT 100";
     //$sql = "SELECT * FROM $wpdb->comments WHERE comment_approved = '1' AND comment_type = '' AND post_password = '' AND comment_ID > $last_update_id ORDER BY comment_date_gmt LIMIT 100";
+
     $sql = "SELECT * FROM $wpdb->comments WHERE comment_approved = '1' AND comment_type = '' AND comment_ID > $last_update_id LIMIT 100";
     
     $comments = $wpdb->get_results($sql);
@@ -16,7 +18,7 @@
     foreach ($comments as $comment) {
         $output .= '<comment>\n';
         $output .= "<post_id>". $comment->comment_post_ID . "</post_id>\n";
-        $output .= "<id>" . $comment->ID . "</id>\n";
+        $output .= "<id>" . $comment->comment_ID . "</id>\n";
         $output .= "<parent>" . $comment->comment_parent . "</parent>\n";
         $output .= "<author>".strip_tags($comment->comment_author) . "</author>\n";
         $output .= "<author_email>" . $comment->comment_author_email . "</author_email>\n";
@@ -26,10 +28,14 @@
         $output .= "<date>". $comment->comment_date . "</date>\n";
         $output .= "<date_gmt>". $comment->comment_date_gmt . "</date_gmt>\n";
         $output .= '</comment>\n';
-        $comments_count ++;
+        $comments_count += 1;
+
+        if( $comment->comment_ID > $max_comment_id ){
+            $max_comment_id = $comment->comment_ID ;
+        }
     }
     $output .= "\n</comments>";
-    if(comments_count == 0){
+    if($comments_count == 0){
         echo "no comments";
         die();
     }
@@ -52,8 +58,19 @@
     while( !feof($fp) ){
         $ret .= fgets($fp);
     }
-    echo $ret;
     fclose($fp);
-
-    update_option("bm_last_update_id", $comments_count)
+    /*
+    if( preg_match('/success=true/', $ret) ){
+        // success
+        echo "success";
+    }else{
+        preg_match('/msg="(\w+)";/', $matches);
+        echo $matches[1];
+    }
+    */
+    update_option("bm_last_update_id", $max_comment_id);
+    preg_match('/\r\n\r\n(.+)/', $ret, $matches);
+    echo "已同步 $last_update_id 到 $max_comment_id";
+    echo $matches[1];
+    die();
 ?>  
