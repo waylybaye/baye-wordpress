@@ -60,20 +60,22 @@
         $ret .= fgets($fp);
     }
     fclose($fp);
-    /*
     if( preg_match('/success=true/', $ret) ){
-        // success
-        echo "success";
+        $success = True;
+        $msg =  "已同步评论 $last_update_id 到 $max_comment_id ...";
+        update_option("bm_last_update_id", $max_comment_id);
+
     }else{
-        preg_match('/msg="(\w+)";/', $matches);
-        echo $matches[1];
+        $success = False;
+        if(preg_match('/msg="(\w+)";/', $matches)){
+            $msg =  $matches[1];
+        }else{
+            $msg = "导出失败，服务器发生了一个错误.";
+        }
     }
-    */
-    update_option("bm_last_update_id", $max_comment_id);
+
     preg_match('/\r\n\r\n(.+)/', $ret, $matches);
 
-    $msg =  "已同步评论 $last_update_id 到 $max_comment_id ...";
-    $success = True;
     // echo $matches[1];
 
     $sql = "SELECT MAX(comment_ID) FROM $wpdb->comments;";

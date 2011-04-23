@@ -128,8 +128,8 @@ function bm_settings(){
 
     <script type="text/javascript">
         jQuery('#bm_export_comments').click(function(){
+            jQuery(this).html("导出中 ...");
             jQuery.get("<?php echo admin_url('index.php'); ?>?bm_action=export_comments", {}, function(resp){
-                
                 jQuery('#bm_export_comments_info').append("<p>" +resp.msg + "</p>");
                 if( resp.success ){
                     if( resp.goon == '1' ){
