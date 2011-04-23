@@ -114,9 +114,14 @@ function bm_settings(){
     <br/>
 
     <p> <h3>导出WordPress 评论</h3> </p>
+    <style type="text/css">
+    .finish{
+        color: green;
+    }
+    </style>
     <div>
         <a class="button" id="bm_export_comments" >导出评论</a>
-        <p id="bm_export_comments_info">
+        <p id="bm_export_comments_info" style="/*border:1px solid gray;padding:5px;width:500px;*/">
         </p>
     </div>
 
@@ -124,8 +129,16 @@ function bm_settings(){
     <script type="text/javascript">
         jQuery('#bm_export_comments').click(function(){
             jQuery.get("<?php echo admin_url('index.php'); ?>?bm_action=export_comments", {}, function(resp){
-                jQuery('#bm_export_comments_info').html(resp);
-            }, 'html')
+                
+                jQuery('#bm_export_comments_info').append("<p>" +resp.msg + "</p>");
+                if( resp.success ){
+                    if( resp.goon == '1' ){
+                        jQuery('#bm_export_comments').click();
+                    }else{
+                        jQuery('#bm_export_comments_info').append("<p class='finish'>所有评论导出完毕.</p>");
+                    }
+                }
+            }, 'json')
             return false;
         });
     </script>

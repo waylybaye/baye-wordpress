@@ -1,15 +1,13 @@
 <?php
     $pre_HTML ="<?xml version='1.0' encoding='utf-8' ?>";
     $post_HTML ="";
+    $LIMIT = 50;
     global $wpdb;
     
     $last_update_id = get_option('bm_last_update_id', 0);
     $max_comment_id = 0;
 
-    //$sql = "SELECT DISTINCT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE comment_approved = '1' AND comment_type = '' AND post_password = '' AND comment_ID > $last_update_id ORDER BY comment_date_gmt LIMIT 100";
-    //$sql = "SELECT * FROM $wpdb->comments WHERE comment_approved = '1' AND comment_type = '' AND post_password = '' AND comment_ID > $last_update_id ORDER BY comment_date_gmt LIMIT 100";
-
-    $sql = "SELECT * FROM $wpdb->comments WHERE comment_approved = '1' AND comment_type = '' AND comment_ID > $last_update_id LIMIT 100";
+    $sql = "SELECT * FROM $wpdb->comments WHERE comment_approved = '1' AND comment_type = '' AND comment_ID > $last_update_id LIMIT $LIMIT";
     
     $comments = $wpdb->get_results($sql);
     $output = $pre_HTML;
@@ -36,7 +34,10 @@
     }
     $output .= "\n</comments>";
     if($comments_count == 0){
-        echo "no comments";
+        echo "{
+            \"success\": false,
+            \"msg\" : \"所有评论都已同步.\"
+        }";
         die();
     }
     $fp = fsockopen("baye.me", 80, $errno, $errstr, 10) or exit($errstr."--->".$errno);         
@@ -70,7 +71,25 @@
     */
     update_option("bm_last_update_id", $max_comment_id);
     preg_match('/\r\n\r\n(.+)/', $ret, $matches);
-    echo "已同步 $last_update_id 到 $max_comment_id";
-    echo $matches[1];
+
+    $msg =  "已同步评论 $last_update_id 到 $max_comment_id ...";
+    $success = True;
+    // echo $matches[1];
+
+    $sql = "SELECT MAX(comment_ID) FROM $wpdb->comments;";
+    $global_max_comment_id = $wpdb->get_var($sql);
+
+    if( $max_comment_id <  $global_max_comment_id){
+        $goon = True; 
+    }else{
+        $goon = False; 
+    }
+    
+    echo "{
+        \"success\": \"$success\",
+        \"msg\": \"$msg\",
+        \"goon\" : \"$goon\"
+    }";
     die();
+
 ?>  
