@@ -128,9 +128,9 @@ function bm_settings(){
             $last_update_id = get_option('bm_last_update_id');
             $remain = $global_max_comment_id - $last_update_id;
             if( $remain == 0 ){
-                echo "<p>所有评论都已同步.</p>";
+                echo "<p style='color:green;'>所有评论都已同步.</p>";
             }else{
-                echo "<p>已同步到第 $last_update_id 条评论，还需同步 $remain 条";
+                echo "<p style='color:orange;'>已同步到第 $last_update_id 条评论，还需同步 $remain 条";
             }
         ?>
         <p id="bm_export_comments_info" style="/*border:1px solid gray;padding:5px;width:500px;*/">
