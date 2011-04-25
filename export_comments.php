@@ -22,7 +22,7 @@
         $output .= "<author_email>" . $comment->comment_author_email . "</author_email>\n";
         $output .= "<author_url>" . $comment->comment_author_url . "</author_url>\n";
         $output .= "<author_ip>" . $comment->comment_author_IP . "</author_ip>\n";
-        $output .= "<content>". $comment->comment_content . "</content>\n";
+        $output .= "<content><![CDATA[". $comment->comment_content . "]]></content>\n";
         $output .= "<date>". $comment->comment_date . "</date>\n";
         $output .= "<date_gmt>". $comment->comment_date_gmt . "</date_gmt>\n";
         $output .= '</comment>\n';
