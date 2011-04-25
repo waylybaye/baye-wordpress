@@ -3,7 +3,7 @@
 Plugin Name: BAYE.ME Social Comments 
 Plugin URI: http://baye.me 
 Description: BAYE.ME 社会化评论 
-Version: 0.1 
+Version: 0.12
 Author: Wayly.baye
 Author URI: http://baye.wayly.net
 */
@@ -70,6 +70,7 @@ function bm_admin(){
 </script>
 <link rel="stylesheet" href='<?echo WP_CONTENT_URL . '/plugins' . bm_get_plugin_path(__FILE__); ?>/styles.css'/>
 <p id="bm_panel">
+    <?php echo $token; ?>
     <a class="button" href='javascript:show_tab("settings");'>API 设置</a>
     <a class="button" href='javascript:show_tab("comments");'>评论管理</a>
     <a class="button" href='javascript:show_comments("unapproved");'>审核评论</a>
@@ -123,6 +124,11 @@ function bm_settings(){
         <a class="button" id="bm_export_comments" >导出评论</a>
         <p id="bm_export_comments_info" style="/*border:1px solid gray;padding:5px;width:500px;*/">
         </p>
+        <?php 
+            $api_key = get_option('bm_api_key');
+            $api_secret = get_option('bm_api_secret');
+            echo md5($api_key . $api_secret);
+        ?>
     </div>
 
 
