@@ -6,6 +6,21 @@
     
     $last_update_id = get_option('bm_last_update_id', 0);
     $max_comment_id = 0;
+    
+    $sql = "SELECT * FROM $wpdb->posts WHERE post_status = \"publish\" ";
+    $posts = $wpdb->get_results($sql);
+    $output = $pre_HTML;
+    $output .= "<data><posts>\n";
+    foreach ($posts as $post){
+        $output .= "<post>\n";
+        $output .= "<id>" . $post->ID . "</id>\n";
+        $output .= "<title>" . $post->post_title . "</title>\n";
+        $output .= "<url>" . get_permalink( $post->ID ) . "</url>\n";
+        $output .= "</post>\n";
+    }
+    $output .= "</posts>";
+    $pre_HTML = $output;
+
 
     $sql = "SELECT * FROM $wpdb->comments WHERE comment_approved = '1' AND comment_type = '' AND comment_ID > $last_update_id LIMIT $LIMIT";
     
@@ -32,7 +47,7 @@
             $max_comment_id = $comment->comment_ID ;
         }
     }
-    $output .= "\n</comments>";
+    $output .= "\n</comments></data>";
     if($comments_count == 0){
         echo "{
             \"success\": false,
@@ -76,7 +91,7 @@
 
     preg_match('/\r\n\r\n(.+)/', $ret, $matches);
 
-    // echo $matches[1];
+    /// echo $matches[1];
 
     $sql = "SELECT MAX(comment_ID) FROM $wpdb->comments;";
     $global_max_comment_id = $wpdb->get_var($sql);
