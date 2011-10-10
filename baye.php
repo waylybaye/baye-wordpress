@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: BAYE.ME Social Comments 
-Plugin URI: http://baye.me 
-Description: BAYE.ME 社会化评论 
-Version: 0.12.3
+Plugin Name: BAYE.ME Social Comments
+Plugin URI: http://baye.me
+Description: BAYE.ME 社会化评论
+Version: 0.15
 Author: Wayly.baye
-Author URI: http://baye.wayly.net
+Author URI: http://baye.me
 */
 ?>
 <?php
@@ -14,20 +14,20 @@ $BM_API_SECRET = get_option('bm_api_secret');
 $BM_TOKEN = md5($BM_API_KEY . $BM_API_SECRET);
 
 function http_get($path, $params){
-    $fp = fsockopen("baye.me", 80, $errno, $errstr, 10) or exit($errstr."--->".$errno);         
-    
+    $fp = fsockopen("baye.me", 80, $errno, $errstr, 10) or exit($errstr."--->".$errno);
+
     //$length = strlen($params);
     //构造HTTP Header
-    $header = "GET $path?$params HTTP/1.1\r\n";         
+    $header = "GET $path?$params HTTP/1.1\r\n";
     $header .= "Host: baye.me\r\n";
-    $header .= "Content-Type: application/x-www-form-urlencoded\r\n";         
-    //$header .= "Content-Length: ".$length."\r\n";         
-    $header .= "Connection: Close\r\n\r\n";        
+    $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+    //$header .= "Content-Length: ".$length."\r\n";
+    $header .= "Connection: Close\r\n\r\n";
     //添加GET Query
     //$header .= $params."\r\n";
     //发送GET 请求
     //echo $header . "<br/";
-    fputs($fp, $header);         
+    fputs($fp, $header);
     while( !feof($fp) ){
         $ret .= fgets($fp);
     }
@@ -133,21 +133,21 @@ function bm_settings(){
         <input type="hidden" name="update_option"/>
         <label >API KEY :</label>
         <input style="width: 300px" type="text" name="bm_api_key" value="<?php echo get_option("bm_api_key"); ?>"></input>
-    </p> 
+    </p>
     <p>
         <label >SECRET :</label>
         <input style="width: 300px" type="text" name="bm_api_secret" value="<?php echo get_option("bm_api_secret"); ?>"></input>
-    </p> 
+    </p>
     <p>
         <input id="seo_open" type="checkbox" name="bm_seo_open" <?php if( get_option("bm_seo_open") == '1'){ echo "checked"; }?>></input>
         <label for="seo_open"><strong>开启SEO 优化</strong></label>
         <p style="color:gray">开启SEO优化后，如果检测到是搜索引擎的爬虫则将在服务端渲染出评论，让爬虫能抓到评论内容<br/>
         目前支持:百度，Google，搜狗，有道，雅虎，MSN，搜搜</p>
     </p>
-    <p> 
-        <input type="submit" value="保存设置" class="button-primary" /> 
-    </p> 
-    </form> 
+    <p>
+        <input type="submit" value="保存设置" class="button-primary" />
+    </p>
+    </form>
 
     <br/>
 
@@ -192,8 +192,8 @@ function bm_settings(){
             return false;
         });
     </script>
-</div> 
-<?php } 
+</div>
+<?php }
 if( is_admin() ){
         add_action("admin_menu", "bm_admin_menu");
 }
